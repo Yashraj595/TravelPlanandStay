@@ -1,0 +1,121 @@
+<% layout("/layouts/boilerplate") -%>
+
+<style>
+  .listing-form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px 35px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .listing-form-container h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #222;
+  }
+
+  .listing-form-container .form-label {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .listing-form-container .form-control,
+  .listing-form-container textarea {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .listing-form-container .form-control:focus,
+  .listing-form-container textarea:focus {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.15);
+    outline: none;
+  }
+
+  .listing-form-container textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .row-fields {
+    display: flex;
+    gap: 15px;
+  }
+
+  .row-fields .mb-3 {
+    flex: 1;
+  }
+
+  .btn-add {
+    background-color: #fe424d;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+  }
+
+  .btn-add:hover {
+    background-color: #e63946;
+    color: #fff;
+  }
+</style>
+
+<body>
+  <div class="listing-form-container">
+    <h1>Create a New Listing</h1>
+
+    <form method="POST" action="/Listing/new">
+
+      <!-- Title field -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Cozy Beachside Cottage" required />
+      </div>
+
+      <!-- Description field -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="description" class="form-control" placeholder="Describe your listing..." required></textarea>
+      </div>
+
+      <!-- Image URL field -->
+      <div class="mb-3">
+        <label for="image" class="form-label">Image URL</label>
+        <input type="text" id="image" name="image" class="form-control" placeholder="https://example.com/image.jpg" />
+      </div>
+
+      <!-- Price field -->
+      <div class="mb-3">
+        <label for="price" class="form-label">Price / night</label>
+        <input type="number" id="price" name="price" class="form-control" placeholder="₹ 1500" required />
+      </div>
+
+      <!-- Country & Location side by side -->
+      <div class="row-fields">
+        <div class="mb-3">
+          <label for="country" class="form-label">Country</label>
+          <input type="text" id="country" name="country" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <input type="text" id="location" name="location" class="form-control" required />
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <button class="btn btn-add">Add Listing</button>
+      </div>
+
+    </form>
+  </div>
+</body> 
