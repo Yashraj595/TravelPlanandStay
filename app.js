@@ -4,10 +4,12 @@ const path = require('path');
 const Listing = require('./models/listing.js');
 
 const app = express();
+const methodOverride = require("method-override");
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const MONGO_URL = 'mongodb://127.0.0.1:27017/travelandPlan';
@@ -46,12 +48,72 @@ app.get('/Listing/:id', async (req, res) => {
 
 
 // post request for new post 
+app.post('/Listing/new', async (req, res) => {
+  const newListing = new Listing(req.body);
 
-app.post('/Listing/new', async(req, res) => {
-  
-  let {} = req.body;
-
+  await newListing.save();
+  // console.log(newListing);
+  res.redirect("/Listing");
 });
+
+
+// //  edit route
+// app.get("/Listing/:id/edit" , async(req, res)=>{
+//   let {id} = req.params;
+
+//   let listingg = await Listing.findById(id);
+
+//   res.render("Listing/edit.ejs" ,{listingg} );
+
+// })
+
+
+// app.put("/Listings/:id" , async(req, res)=>{
+//   let {id} = req.params;
+//    await  Listing.findByIdAndUpdate(id , {...req.body});
+//     res.redirect("/Listing");
+//   })
+
+
+
+
+
+
+
+
+// Edit Route
+app.get("/Listing/:id/edit", async (req, res) => {
+    const { id } = req.params;
+
+    const listingg = await Listing.findById(id);
+
+    res.render("Listing/edit.ejs", { listingg });
+});
+
+
+// Update Route
+app.put("/Listing/:id", async (req, res) => {
+    const { id } = req.params;
+    
+    await Listing.findByIdAndUpdate(id, req.body);
+
+    res.redirect("/Listing");
+});
+
+
+
+// delete route
+
+app.delete("/Listing/:id" , async(req, res)=>{
+
+  const {id} = req.params;
+
+  await Listing.findByIdAndDelete(id , req.body);
+
+  res.redirect("/Listing");
+
+})
+
 
 
 
