@@ -73,13 +73,16 @@
   <div class="listing-form-container">
     <h1>Create a New Listing</h1>
 
-    <form method="POST" action="/Listing/new">
+    <form class="needs-validation" method="POST" action="/Listing/new" novalidate>
 
       <!-- Title field -->
       <div class="mb-3">
         <label for="title" class="form-label">Title</label>
         <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Cozy Beachside Cottage" required />
+         <div class="valid-feedback">Title looks good!</div>
       </div>
+
+     
 
       <!-- Description field -->
       <div class="mb-3">
@@ -97,6 +100,7 @@
       <div class="mb-3">
         <label for="price" class="form-label">Price / night</label>
         <input type="number" id="price" name="price" class="form-control" placeholder="₹ 1500" required />
+           <div class="invalid-feedback">Please enter a valid Price</div>
       </div>
 
       <!-- Country & Location side by side -->
