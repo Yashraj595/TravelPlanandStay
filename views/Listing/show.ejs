@@ -72,16 +72,17 @@
     background-color: #000;
     color: #fff;
   }
+  
 </style>
 
 <body>
   <div class="listing-detail-container">
-    <h2>Listing Details</h2>
+    <h2><%= listing.title %></h2>
 
     <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
 
     <div class="listing-detail-body">
-      <p class="listing-title-text"><%= listing.title %></p>
+      
       <p><%= listing.description %></p>
       <p>&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
       <p><%= listing.location %></p>
@@ -95,5 +96,24 @@
         <button type="submit" class="btn-delete">Delete</button>
       </form>
     </div>
+    
+    
   </div>
+  <div  class="col-8  offset-3 mb-3">
+      
+      <hr>
+      <h4>Leave a Review</h4>
+      <form action="/Listing/<%=listing._id%>/reviews" method="POST" novalidate class="needs-validation">
+        <div class="mb-3 mt-3">
+          <label for="rating" class="form-label">Rating</label>
+          <input type="range" min="1" max="5" id="rating" class="form-range" name="review[rating]">
+        </div>
+        <div class="mb-3 mt-3">
+          <label for="comment" class="form-label">Comments</label>
+          <textarea name="review[comment]" id="comment" cols="30"  rows="5" class="form-control" required></textarea>
+          <div class="invalid-feedback"> Please add some comments for review</div>
+        </div>
+        <button class="btn btn-outline-dark" >Submit</button>
+      </form>
+    </div>
 </body>
