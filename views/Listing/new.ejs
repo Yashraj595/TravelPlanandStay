@@ -73,7 +73,7 @@
   <div class="listing-form-container">
     <h1>Create a New Listing</h1>
 
-    <form class="needs-validation" method="POST" action="/Listing/new" novalidate>
+    <form class="needs-validation" method="POST" action="/Listing" novalidate>
 
       <!-- Title field -->
       <div class="mb-3">
@@ -93,7 +93,7 @@
       <!-- Image URL field -->
       <div class="mb-3">
         <label for="image" class="form-label">Image URL</label>
-        <input type="text" id="image" name="image" class="form-control" placeholder="https://example.com/image.jpg" />
+        <input type="text" id="image" name="image[url]" class="form-control" placeholder="https://example.com/image.jpg" />
       </div>
 
       <!-- Price field -->

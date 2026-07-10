@@ -36,7 +36,7 @@ router.get(
   '/:id',
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
     if (!listing) {
       throw new ExpressError(404, 'Listing Not Found');
     }
@@ -51,7 +51,10 @@ router.post(
   wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body);
     await newListing.save();
-    res.redirect('/listings');
+
+    req.flash("success" , "New Listing Created !");
+
+    res.redirect('/Listing');
   }),
 );
 
@@ -114,5 +117,14 @@ router.post(
     res.redirect(`/Listing/${req.params.id}`); // send back to show page
   }),
 );
+
+router.delete("/:id/reviews/:reviewId", wrapAsync(async (req,res)=>{  // '/' missing tha
+  let {id , reviewId} = req.params;
+  await Listing.findByIdAndUpdate(id, {$pull:{reviews: reviewId}});  // 'reivews' typo fix
+  await Review.findByIdAndDelete(reviewId);  // capital 'Review' model
+  res.redirect(`/Listing/${id}`);  // capital 'Listing'
+}));
+
+
 
 module.exports = router;

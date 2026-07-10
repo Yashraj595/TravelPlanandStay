@@ -92,3 +92,9 @@ body{
   opacity: 0.2 !important;
   background-color: white;
 }
+
+#review{
+
+  border: 2px solid #ebebeb !important;
+
+}
