@@ -6,9 +6,17 @@ const ejsMate = require('ejs-mate');
 const session = require('express-session');
 
 const ExpressError = require('./utils/ExpressError.js');
-const listingsRouter = require('./routes/listing.js');
+
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStategy = require("passport-local");
+const User = require("./models/user.js");
+
+const listingsRouter = require('./routes/listing.js');
+const userRouter  = require("./routes/user.js");
+
 const app = express();
+
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -33,9 +41,20 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session(sessionOptions)); // ✅ Session register kiya
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req, res , next)=>{
   res.locals.success = req.flash("success");
+  console.log(res.locals.success);
+  res.locals.error = req.flash("error");
+
+  res.locals.currUser = req.user;
   next();
 })
 
@@ -58,8 +77,22 @@ app.get('/', (req, res) => {
   res.redirect('/Listing');
 });
 
-app.use('/Listing', listingsRouter);
+// app.get("/demouser" , async( req, res)=>{
+//   let fakeUser = new User ({
+//     email : "student@gmail.com",
+//     username : "delta-student"
+//   });
 
+
+// let registererdUser = await User.register(fakeUser, 'helloworld');
+// res.send(registererdUser);
+
+
+// })
+
+
+app.use('/Listing', listingsRouter);
+app.use("/" , userRouter);
 // 404 handler
 app.use((req, res, next) => {
   next(new ExpressError(404, 'Page Not Found'));

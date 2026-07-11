@@ -6,6 +6,7 @@ const ExpressError = require('../utils/ExpressError.js');
 const Listing = require('../models/listing.js');
 const { listingSchema } = require('../schema.js');
 const Review = require("../models/review.js");
+const {isLoggedIn}  = require("../middleware.js");
 // Validation middleware
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
@@ -27,9 +28,12 @@ router.get(
 );
 
 // New listing form
-router.get('/new', (req, res) => {
-  res.render('Listing/new.ejs');
+router.get("/new", isLoggedIn,  (req, res) => {
+ 
+  res.render("Listing/new.ejs");
 });
+
+
 
 // Show route - ek listing
 router.get(
@@ -38,7 +42,7 @@ router.get(
     let { id } = req.params;
     const listing = await Listing.findById(id).populate("reviews");
     if (!listing) {
-      throw new ExpressError(404, 'Listing Not Found');
+        req.flash('error', 'New Listing Created !');
     }
     res.render('Listing/show.ejs', { listing });
   }),
@@ -47,12 +51,13 @@ router.get(
 // Create route - naya listing save karna
 router.post(
   '/',
+  isLoggedIn,
   validateListing,
   wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body);
     await newListing.save();
 
-    req.flash("success" , "New Listing Created !");
+    req.flash('success', 'New Listing Created !');
 
     res.redirect('/Listing');
   }),
@@ -60,13 +65,15 @@ router.post(
 
 // Edit route - form dikhana
 router.get(
-  '/:id/edit',
+  '/:id/edit',isLoggedIn,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
+    req.flash('success', 'New Listing Created !');
     if (!listing) {
       throw new ExpressError(404, 'Listing Not Found');
     }
+
     res.render('Listing/edit.ejs', { listing });
   }),
 );
@@ -74,10 +81,12 @@ router.get(
 // Update route
 router.put(
   '/:id',
+  isLoggedIn,
   validateListing,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body);
+    req.flash('success', 'New Listing Created !');
     res.redirect('/listing');
   }),
 );
@@ -85,9 +94,11 @@ router.put(
 // Delete route
 router.delete(
   '/:id',
+  isLoggedIn,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
+    req.flash('success', 'listing deleted successfully !');
     res.redirect('/listing');
   }),
 );
@@ -122,6 +133,7 @@ router.delete("/:id/reviews/:reviewId", wrapAsync(async (req,res)=>{  // '/' mis
   let {id , reviewId} = req.params;
   await Listing.findByIdAndUpdate(id, {$pull:{reviews: reviewId}});  // 'reivews' typo fix
   await Review.findByIdAndDelete(reviewId);  // capital 'Review' model
+  req.flash('success', 'New Listing Created !');
   res.redirect(`/Listing/${id}`);  // capital 'Listing'
 }));
 
