@@ -17,4 +17,8 @@ module.exports.saveRedirectUrl = (req, res, next)=>{
     res.locals.redirectUrl = req.session.redirectUrl;
   }
   next();
+};
+
+module.exports.isOwner = ( req, res , next)=>{
+  
 }

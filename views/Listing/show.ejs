@@ -88,7 +88,7 @@
       <p><%= listing.location %></p>
       <p><%= listing.country %></p>
     </div>
-
+  <% if(  currUser && currUser._id.equals(listing.owner._id)) { %>
     <div class="listing-actions">
       <a href="/Listing/<%= listing._id %>/edit" class="btn-edit-link">Edit</a>
 
@@ -96,6 +96,10 @@
         <button type="submit" class="btn-delete">Delete</button>
       </form>
     </div>
+
+  
+
+    <%}%>
     
     
   </div>

@@ -40,12 +40,13 @@ router.get(
   '/:id',
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id).populate("reviews").populate("owner");
     if (!listing) {
         req.flash('error', 'New Listing Created !');
+        res.redirect("/listings");
     }
     res.render('Listing/show.ejs', { listing });
-  }),
+  })
 );
 
 // Create route - naya listing save karna
@@ -55,6 +56,7 @@ router.post(
   validateListing,
   wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body);
+    newListing.owner = req.user._id;
     await newListing.save();
 
     req.flash('success', 'New Listing Created !');
@@ -84,6 +86,11 @@ router.put(
   isLoggedIn,
   validateListing,
   wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(id);
+    if(!listing.owner.equals(res.locals.currUser._id)){
+      req.flash("error", " You don't have persion to edit");
+      res.redirect(`/listings/${id}`);
+    }
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body);
     req.flash('success', 'New Listing Created !');
