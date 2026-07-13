@@ -20,6 +20,7 @@ const LocalStategy = require("passport-local");
 const User = require("./models/user.js");
 
 const listingsRouter = require('./routes/listing.js');
+const reviewRouter = require('./routes/review.js');
 const userRouter  = require("./routes/user.js");
 
 const app = express();
@@ -99,6 +100,7 @@ app.get('/', (req, res) => {
 
 
 app.use('/Listing', listingsRouter);
+app.use('/Listing/:id/reviews', reviewRouter);
 app.use("/" , userRouter);
 // 404 handler
 app.use((req, res, next) => {

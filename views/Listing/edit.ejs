@@ -73,7 +73,7 @@
   <div class="listing-form-container">
     <h2>Edit Listing</h2>
 
-    <form method="POST" action="/Listing/<%= listingg._id %>?_method=PUT">
+    <form method="POST" action="/Listing/<%= listing._id %>?_method=PUT">
 
       <!-- Title field -->
       <div class="mb-3">
@@ -83,7 +83,7 @@
           id="title"
           name="title"
           class="form-control"
-          value="<%= listingg.title %>"
+          value="<%= listing.title %>"
           required
         />
       </div>
@@ -96,7 +96,7 @@
           name="description"
           class="form-control"
           required
-        ><%= listingg.description %></textarea>
+        ><%= listing.description %></textarea>
       </div>
 
       <!-- Image URL field -->
@@ -107,7 +107,7 @@
           id="image"
           name="image[url]"
           class="form-control"
-          value="<%= listingg.image.url %>"
+          value="<%= listing.image.url %>"
         />
       </div>
 
@@ -119,7 +119,7 @@
           id="price"
           name="price"
           class="form-control"
-          value="<%= listingg.price %>"
+          value="<%= listing.price %>"
           required
         />
       </div>
@@ -133,7 +133,7 @@
             id="country"
             name="country"
             class="form-control"
-            value="<%= listingg.country %>"
+            value="<%= listing.country %>"
             required
           />
         </div>
@@ -145,7 +145,7 @@
             id="location"
             name="location"
             class="form-control"
-            value="<%= listingg.location %>"
+            value="<%= listing.location %>"
             required
           />
         </div>
