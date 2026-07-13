@@ -24,12 +24,16 @@ const validateListing = (req, res, next) => {
 router
   .route('/')
   .get(wrapAsync(listingController.index))
-  .post(
-    isLoggedIn,
-    upload.single('image'), // BUG FIX: pehle multer wire hi nahi tha, form ka file input kabhi process nahi hota tha
-    validateListing,
-    wrapAsync(listingController.createListing),
-  );
+  // .post(
+  //   isLoggedIn,
+  //   upload.single('image'), // BUG FIX: pehle multer wire hi nahi tha, form ka file input kabhi process nahi hota tha
+    // validateListing,
+    // wrapAsync(listingController.createListing),
+.post(upload.single("listing[image]"), (req, res)=>{
+  res.send(req.file);
+})
+
+  // );
 
 router.get('/new', isLoggedIn, listingController.renderNewForm);
 
