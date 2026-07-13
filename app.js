@@ -81,9 +81,9 @@ async function main() {
 }
 
 // Routes
-app.get('/', (req, res) => {
-  res.redirect('/Listing');
-});
+// app.get('/', (req, res) => {
+//   res.redirect('/Listing');
+// });
 
 // app.get("/demouser" , async( req, res)=>{
 //   let fakeUser = new User ({
