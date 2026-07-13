@@ -6,7 +6,12 @@ const ExpressError = require('../utils/ExpressError.js');
 const Listing = require('../models/listing.js');
 const { listingSchema } = require('../schema.js');
 const Review = require("../models/review.js");
-const {isLoggedIn}  = require("../middleware.js");
+const { isLoggedIn, isReviewAuthor } = require('../middleware.js');
+const multer = require("multer");
+const {storage} = require("../cloudConfig.js");
+const upload = multer({storage});
+
+
 // Validation middleware
 const validateListing = (req, res, next) => {
   const { error } = listingSchema.validate(req.body);
@@ -40,7 +45,12 @@ router.get(
   '/:id',
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
+    const listing = await Listing.findById(id).populate("reviews").populate({
+      path:"reviews",
+      populate:{
+        path:"author",
+      },
+    }).populate("owner");
     if (!listing) {
         req.flash('error', 'New Listing Created !');
         res.redirect("/listings");
@@ -86,15 +96,20 @@ router.put(
   isLoggedIn,
   validateListing,
   wrapAsync(async (req, res) => {
+
+   
+
+   
+
     let listing = await Listing.findById(id);
     if(!listing.owner.equals(res.locals.currUser._id)){
       req.flash("error", " You don't have persion to edit");
       res.redirect(`/listings/${id}`);
     }
     const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, req.body);
+    await Listing.findByIdAndUpdate(id, { ...req.body.listing});
     req.flash('success', 'New Listing Created !');
-    res.redirect('/listing');
+    res.redirect(`/listings/${id}`);
   }),
 );
 
@@ -126,6 +141,8 @@ router.delete(
 
 router.post(
   '/:id/reviews',
+  isReviewAuthor,
+  isLoggedIn,
   wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
@@ -136,13 +153,19 @@ router.post(
   }),
 );
 
-router.delete("/:id/reviews/:reviewId", wrapAsync(async (req,res)=>{  // '/' missing tha
-  let {id , reviewId} = req.params;
-  await Listing.findByIdAndUpdate(id, {$pull:{reviews: reviewId}});  // 'reivews' typo fix
-  await Review.findByIdAndDelete(reviewId);  // capital 'Review' model
-  req.flash('success', 'New Listing Created !');
-  res.redirect(`/Listing/${id}`);  // capital 'Listing'
-}));
+router.delete(
+  '/:id/reviews/:reviewId',
+  isLoggedIn,
+  isReviewAuthor,
+  wrapAsync(async (req, res) => {
+    // '/' missing tha
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); // 'reivews' typo fix
+    await Review.findByIdAndDelete(reviewId); // capital 'Review' model
+    req.flash('success', 'New Listing Created !');
+    res.redirect(`/Listing/${id}`); // capital 'Listing'
+  }),
+);
 
 
 

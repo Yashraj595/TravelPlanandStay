@@ -73,7 +73,7 @@
   <div class="listing-form-container">
     <h1>Create a New Listing</h1>
 
-    <form class="needs-validation" method="POST" action="/Listing" novalidate>
+    <form class="needs-validation" method="POST" action="/Listing" novalidate enctype="multipart/form-data">
 
       <!-- Title field -->
       <div class="mb-3">
@@ -91,10 +91,12 @@
       </div>
 
       <!-- Image URL field -->
+     
       <div class="mb-3">
-        <label for="image" class="form-label">Image URL</label>
-        <input type="text" id="image" name="image[url]" class="form-control" placeholder="https://example.com/image.jpg" />
+        <label for="image" class="form-label">upload Image</label>
+        <input type="file" id="image" name="image[url]" class="form-control"  />
       </div>
+
 
       <!-- Price field -->
       <div class="mb-3">
