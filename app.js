@@ -1,9 +1,6 @@
- if(process.env.NODE_ENV != "production"){
-  require("dotenv").config();
- }
- 
- 
- console.log(process.env.SECRET);
+if (process.env.NODE_ENV != 'production') {
+  require('dotenv').config();
+}
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -11,33 +8,50 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 
 const ExpressError = require('./utils/ExpressError.js');
 
-const flash = require("connect-flash");
-const passport = require("passport");
-const LocalStategy = require("passport-local");
-const User = require("./models/user.js");
+const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStategy = require('passport-local');
+const User = require('./models/user.js');
 
 const listingsRouter = require('./routes/listing.js');
 const reviewRouter = require('./routes/review.js');
-const userRouter  = require("./routes/user.js");
+const userRouter = require('./routes/user.js');
 
 const app = express();
-
 
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', ejsMate);
 
+// MongoDB connection URL
+const dbURL = process.env.ATLASDB;
+
+// Session store (MongoDB me sessions save karne ke liye)
+const store = MongoStore.create({
+  mongoUrl: dbURL,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600, // for Lazy Update
+});
+
+store.on('error', (err) => {
+  console.log('ERROR in Mongo session store', err);
+});
+
 // Session options
 const sessionOptions = {
-  secret: 'mysupersecretcode',
+  store: store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
-    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // ✅ Date object
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
   },
@@ -47,7 +61,7 @@ const sessionOptions = {
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session(sessionOptions)); // ✅ Session register kiya
+app.use(session(sessionOptions));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,18 +70,12 @@ passport.use(new LocalStategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
-app.use((req, res , next)=>{
-  res.locals.success = req.flash("success");
-  console.log(res.locals.success);
-  res.locals.error = req.flash("error");
-
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
   res.locals.currUser = req.user;
   next();
-})
-
-// MongoDB connection
-const MONGO_URL = 'mongodb://127.0.0.1:27017/travelandPlan';
+});
 
 main()
   .then(() => console.log('Successfully connected'))
@@ -77,31 +85,18 @@ main()
   });
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(dbURL);
 }
 
 // Routes
-// app.get('/', (req, res) => {
-//   res.redirect('/Listing');
-// });
-
-// app.get("/demouser" , async( req, res)=>{
-//   let fakeUser = new User ({
-//     email : "student@gmail.com",
-//     username : "delta-student"
-//   });
-
-
-// let registererdUser = await User.register(fakeUser, 'helloworld');
-// res.send(registererdUser);
-
-
-// })
-
+app.get('/', (req, res) => {
+  res.redirect('/Listing');
+});
 
 app.use('/Listing', listingsRouter);
 app.use('/Listing/:id/reviews', reviewRouter);
-app.use("/" , userRouter);
+app.use('/', userRouter);
+
 // 404 handler
 app.use((req, res, next) => {
   next(new ExpressError(404, 'Page Not Found'));
