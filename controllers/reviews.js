@@ -6,9 +6,6 @@ module.exports.createReview = async (req, res) => {
 
   const newReview = new Review(req.body.review);
 
-  // BUG FIX: pehle author kabhi set hi nahi hota tha, isliye
-  // review.author hamesha undefined rehta tha aur views/show.ejs me
-  // "review.author.username" crash karta tha.
   newReview.author = req.user._id;
 
   listing.reviews.push(newReview);

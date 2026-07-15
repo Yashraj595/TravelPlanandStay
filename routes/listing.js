@@ -33,6 +33,8 @@ router
 
   // );
 
+  router.get('/search', wrapAsync(listingController.searchListings));
+
 router.get('/new', isLoggedIn, listingController.renderNewForm);
 
 router

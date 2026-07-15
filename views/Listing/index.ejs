@@ -29,19 +29,25 @@
   }
 
 .tax-toggle{
-    border: 1px solid black;
+    border: 1px solid rgb(144, 138, 138);
     border-radius: 1rem;
-    height: 3.25rem;
-    padding: 1 rem;
+    height: 2rem;
+    width: 12rem;
+    padding: 1rem;
     margin-left: 5rem;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
+    
 }
 </style>
 
 <body>
 
     <!-- <h1>All Listings</h1> -->
+    <% if (searchQuery && searchQuery.trim() !== '') { %>
+      <h4 class="mt-3">Search results for "<%= searchQuery %>"</h4>
+    <% } %>
 <div id="filters">
   
          <div class="filter">
@@ -113,7 +119,7 @@
          <div class="tax-toggle">
             <div class="form-check-reverse form-switch">
   <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-  <label class="form-check-label" for="switchCheckDefault">Display Taxes</label>
+  <label class="form-check-label" for="switchCheckDefault">Display After Taxes</label>
 </div>
          </div>
 
@@ -121,6 +127,9 @@
 </div>
 
     <div class="row row-cols-lg-3  row-cols-md-2  row-cols-sm-1 mt-3" >
+ <% if (allListings.length === 0) { %>
+    <p class="mt-4">No listings found. Try a different search.</p>
+ <% } %>
  <% for (let listing of allListings) { %>
       <a  href="/Listing/<%= listing._id %>" class="listing-link">
         <div class="card" >
@@ -129,7 +138,7 @@
                 src="<%= listing.image.url %>"
                 class="card-img-top"
                 alt="<%= listing.title %>"
-                style="height: 20rem;"
+                style="height: 18rem;"
                 
             >
             <div class="card-img-overlay">abcd</div>
@@ -146,14 +155,17 @@
 
                 <p class="card-text">
                     ₹ <%= listing.price.toLocaleString("en-IN") %> / night
-
                     <i class="tax-info">&nbsp; &nbsp;+18% GST</i>
+          <br>
+     <%= listing.location %>  <%= listing.country %>
+                  <p class="card-text">
+               
                 </p>
 
-                <p class="card-text">
-                    📍 <%= listing.location %>, <%= listing.country %>
+
                 </p>
 
+               
               
 
 
@@ -188,4 +200,3 @@
     });
 </script>
 </body>
-

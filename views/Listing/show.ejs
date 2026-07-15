@@ -88,7 +88,8 @@
       <p><%= listing.location %></p>
       <p><%= listing.country %></p>
     </div>
-  <% if(  currUser && currUser._id.equals(listing.owner._id)) { %>
+ 
+   <% if( currUser && listing.owner && currUser._id.equals(listing.owner._id)) { %>
     <div class="listing-actions">
       <a href="/Listing/<%= listing._id %>/edit" class="btn-edit-link">Edit</a>
 
@@ -164,12 +165,12 @@
 <% for(review of listing.reviews) { %>
 <div class="card col-5 ms-3 mb-3" id="review">
   <div class="card-body">
-    <h5 class="card-title"><%= review.author.username %></h5>
-     <p class="starability-result card-text" data-rating=" <%= review.rating %>">
+   <h5 class="card-title"><%= review.author ? review.author.username : "Anonymous" %></h5>
+     <p class="starability-result card-text" data-rating="<%= review.rating %>">
     
   </p>
     <p class="card-text"><%= review.comment %></p>
-    <!-- <p class="card-text"> <%= review.rating %> stars</p> -->
+  
     
   </div>
   <form class="mb-3" method="POST" action="/Listing/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
