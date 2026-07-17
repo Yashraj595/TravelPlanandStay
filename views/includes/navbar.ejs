@@ -12,14 +12,37 @@
   margin-right: 0.5rem;
 }
 
-/* Only absolutely center the search bar on md+ screens.
-   On small screens it just flows in normal document order. */
 @media (min-width: 768px) {
   .navbar-search-form {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+}
+
+/* Mobile hamburger menu ka background/look */
+@media (max-width: 767px) {
+  .navbar-collapse {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    padding: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .navbar-collapse .nav-link {
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .navbar-collapse .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .navbar-search-form {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 }
 </style>
